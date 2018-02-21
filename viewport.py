@@ -222,24 +222,28 @@ class Viewport(tk.Tk):
         # Print out line and destination
         label = tk.Label(routeRoot, text= f'{name} mot {destination}', bg=colour.get("fgColor"), fg=colour.get("bgColor"))
         
+        # Get labels if the line changes number/destination
         extras = []
         if multipleDestionations:
             direction = route.get("Direction")
             journeyName = route.get("JourneyName")
             stop = route.get("Stop")
 
+            # Go through every change
             i = 1
             while i < len(direction):
+                # Get the stop where it changes
                 stopID = int(direction[i].get("routeIdxFrom"))
                 fromStop = stop[stopID].get("name")
 
+                # Get new line name and make them presentable
                 name = journeyName[i].get("name")
-                # Make names presentable
                 name = name.replace("Bus", "Buss")
                 name = name.replace("Sp\u00e5", "Sp\u00e5rvagn")
                 name = name.replace("Reg T\u00c5G", "T\u00e5g")
                 name = name.replace("Fär", "Färja")
 
+                # Create the label and add it to a list
                 labelText = f'Blir {name} mot {direction[i].get("$")} vid {fromStop}'
                 extras.append(tk.Label(routeRoot, text=labelText, bg=colour.get("fgColor"), fg=colour.get("bgColor")))
                 i += 1
@@ -253,8 +257,10 @@ class Viewport(tk.Tk):
             columns = 4
         else:
             columns = 2
-            
+
+        # Grid the journey info    
         label.grid(sticky=NESW, row=0, column=0, columnspan=columns)
+        
         if multipleDestionations:
             for i, value in enumerate(extras):
                 value.grid(sticky=NESW, row=i+1, column = 0, columnspan=columns)
