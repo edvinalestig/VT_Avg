@@ -37,6 +37,9 @@ def tripTime(trip):
 
 # Function for planning a trip. Searches for stops and gets a plan between them.
 def plan(self, fr, to, time_, date, arr, smallChangeTime):
+    self.lastTripDepStop = fr
+    self.lastTripArrStop = to
+    
     toStop, toStopname = self.api.findStop(to)
     if not toStop:
         print("Destination stop not found.")
@@ -46,6 +49,8 @@ def plan(self, fr, to, time_, date, arr, smallChangeTime):
     if not frStop:
         print("Origin stop not found.")
         return
+    self.lastTripDepStop = frStopname
+    self.lastTripArrStop = toStopname
 
     trip = self.api.getPlan(frStop, toStop, time_=time_, date=date, arr=arr, smallChangeTime=smallChangeTime)
     self.printPlan(trip, toStopname, frStopname)
@@ -57,6 +62,7 @@ def dep(self, stop, time_, date):
     if not stop:
         print("Stop not found.")
         return
+    self.lastDepStop = stopname
 
     # Get departures from stop
     departures = self.api.getDepartures(stop, date=date, time_=time_)

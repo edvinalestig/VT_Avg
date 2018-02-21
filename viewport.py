@@ -24,6 +24,10 @@ class Viewport(tk.Tk):
 
         self.api = APIRequest()
 
+        self.lastDepStop = ""
+        self.lastTripDepStop = ""
+        self.lastTripArrStop = ""
+
         self.frame = tk.Frame(self)
         self.frame.pack()
         self.mainMenu()
@@ -53,11 +57,13 @@ class Viewport(tk.Tk):
         tk.Label(self.frame, text="Fr\u00e5n").grid(row=2, column=0, columnspan=1, sticky=NESW)
         frombox = tk.Entry(self.frame)
         frombox.grid(row=2, column=1, columnspan=2, sticky=NESW)
+        frombox.insert(tk.END, self.lastTripDepStop)
         tk.Button(self.frame, text="Rensa", command=lambda: frombox.delete(0, tk.END)).grid(row=2, column=3, columnspan=1, sticky=NESW)
 
         tk.Label(self.frame, text="Till").grid(row=3, column=0, columnspan=1, sticky=NESW)
         tobox = tk.Entry(self.frame)
         tobox.grid(row=3, column=1, columnspan=2, sticky=NESW)
+        tobox.insert(tk.END, self.lastTripArrStop)
         tk.Button(self.frame, text="Rensa", command=lambda: tobox.delete(0, tk.END)).grid(row=3, column=3, columnspan=1, sticky=NESW)
 
         tk.Label(self.frame, text="Tid").grid(row=4, column=0, columnspan=1, sticky=NESW)
@@ -275,6 +281,7 @@ class Viewport(tk.Tk):
         tk.Label(self.frame, text="Hållplats").grid(row=2, column=0, columnspan=1, sticky=NESW)
         stopbox = tk.Entry(self.frame)
         stopbox.grid(row=2, column=1, columnspan=1, sticky=NESW)
+        stopbox.insert(tk.END, self.lastDepStop)
         tk.Button(self.frame, text="Rensa", command=lambda: stopbox.delete(0, tk.END)).grid(row=2, column=2, columnspan=1, sticky=NESW)
 
         tk.Label(self.frame, text="Tid").grid(row=3, column=0, columnspan=1, sticky=NESW)
