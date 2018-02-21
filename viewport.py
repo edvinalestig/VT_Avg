@@ -148,8 +148,14 @@ class Viewport(tk.Tk):
             for i, leg in enumerate(trip):
                 depTime = leg.get("Origin").get("time")
                 arrTime = leg.get("Destination").get("time")
-                depDelay = misc.getDelay(leg.get("Origin"))
-                arrDelay = misc.getDelay(leg.get("Destination"))
+                if leg.get("Origin").get("rtTime"):
+                    depDelay = misc.getDelay(leg.get("Origin")) 
+                else:
+                    depDelay = ""
+                if leg.get("Destination").get("rtTime"):  
+                    arrDelay = misc.getDelay(leg.get("Destination"))
+                else:
+                    arrDelay = ""
 
                 if leg.get("type") == "WALK":
                     #Exclude walks inside the same stop.
@@ -172,8 +178,14 @@ class Viewport(tk.Tk):
 
             depTime = trip.get("Origin").get("time")
             arrTime = trip.get("Destination").get("time")
-            depDelay = misc.getDelay(trip.get("Origin"))
-            arrDelay = misc.getDelay(trip.get("Destination"))
+            if trip.get("Origin").get("rtTime"):
+                depDelay = misc.getDelay(trip.get("Origin")) 
+            else:
+                depDelay = ""
+            if trip.get("Destination").get("rtTime"):  
+                arrDelay = misc.getDelay(trip.get("Destination"))
+            else:
+                arrDelay = ""
 
             tk.Label(frame, text=f'Resa {depTime}-{arrTime} - Restid {tH!s} h {tM!s} min', pady=5).pack(side=tk.TOP, fill=tk.X)
             tk.Button(frame, text="Karta", command= lambda: mapmaker.geometryBackEnd(trip.get("GeometryRef").get("ref"), trip.get("fgColor"))).pack(fill=tk.X)
