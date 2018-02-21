@@ -138,7 +138,9 @@ class Viewport(tk.Tk):
 
             triptime, tH, tM = misc.tripTime(trip)
 
-            tk.Label(frame, text= f'Resa {trip[0].get("Origin").get("time")}-{trip[-1].get("Destination").get("time")} - Restid {str(tH)} h {str(tM)} min', pady=5).grid(row=0, column=0, columnspan=2, sticky=NESW)
+            labelText = f'Resa {trip[0].get("Origin").get("time")}-{trip[-1].get("Destination").get("time")} - Restid {str(tH)} h {str(tM)} min'
+
+            tk.Label(frame, text= labelText, pady=5).grid(row=0, column=0, columnspan=2, sticky=NESW)
                                                                                           
             tk.Button(frame, text="Karta", command= lambda: mapmaker.geometryBackEnd(trip)).grid(row=1, column=0, columnspan=2, sticky=NESW)
 
@@ -209,43 +211,71 @@ class Viewport(tk.Tk):
         # Get destination ("Centralstationen")
         try:
             destination = route.get("Direction")[0].get("$")
+            multipleDestionations = True
         except KeyError:
             destination = route.get("Direction").get("$")
+            multipleDestionations = False
 
         # Store colour-dict in variable
         colour = route.get("Color")
 
         # Print out line and destination
         label = tk.Label(routeRoot, text= f'{name} mot {destination}', bg=colour.get("fgColor"), fg=colour.get("bgColor"))
+        
+        extras = []
+        if multipleDestionations:
+            direction = route.get("Direction")
+            journeyName = route.get("JourneyName")
+            stop = route.get("Stop")
+
+            i = 1
+            while i < len(direction):
+                stopID = int(direction[i].get("routeIdxFrom"))
+                fromStop = stop[stopID].get("name")
+
+                name = journeyName[i].get("name")
+                # Make names presentable
+                name = name.replace("Bus", "Buss")
+                name = name.replace("Sp\u00e5", "Sp\u00e5rvagn")
+                name = name.replace("Reg T\u00c5G", "T\u00e5g")
+                name = name.replace("Fär", "Färja")
+
+                labelText = f'Blir {name} mot {direction[i].get("$")} vid {fromStop}'
+                extras.append(tk.Label(routeRoot, text=labelText, bg=colour.get("fgColor"), fg=colour.get("bgColor")))
+                i += 1
+
+
 
         # Determines how many columns are necessary
         if len(route.get("Stop")) > 60:
-            label.grid(sticky=NESW, row=0, column=0, columnspan=6)
             columns = 6
         elif len(route.get("Stop")) > 30:
-            label.grid(sticky=NESW, row=0, column=0, columnspan=4)
             columns = 4
         else:
-            label.grid(sticky=NESW, row=0, column=0, columnspan=2)
             columns = 2
+            
+        label.grid(sticky=NESW, row=0, column=0, columnspan=columns)
+        if multipleDestionations:
+            for i, value in enumerate(extras):
+                value.grid(sticky=NESW, row=i+1, column = 0, columnspan=columns)
 
         # Print route and times
         for i, stops in enumerate(route.get("Stop")):
             column = 0
-            row = i
+            row = i + len(extras)
             # Changes what column stuff is being put into.
             if len(route.get("Stop")) > 60:
                 if i >= 2 * len(route.get("Stop")) // 3:
                     column = 4
-                    row = i - (2 * len(route.get("Stop")) // 3)
+                    row -= (2 * len(route.get("Stop")) // 3)
                 elif i >= len(route.get("Stop")) // 3:
                     column = 2
-                    row = i - (len(route.get("Stop")) // 3)
+                    row -= (len(route.get("Stop")) // 3)
                 
             elif len(route.get("Stop")) > 30:
                 if i >= len(route.get("Stop")) // 2:
                     column = 2
-                    row = i - (len(route.get("Stop")) // 2)
+                    row -= (len(route.get("Stop")) // 2)
             
             # Prints name of stop 
             tk.Label(routeRoot, text=stops.get("name")).grid(sticky=NESW, row=row + 1, column=column)
