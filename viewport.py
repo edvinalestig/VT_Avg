@@ -218,6 +218,7 @@ class Viewport(tk.Tk):
         name = name.replace("Bus", "Buss")
         name = name.replace("Sp\u00e5", "Sp\u00e5rvagn")
         name = name.replace("Reg T\u00c5G", "T\u00e5g")
+        name = name.replace("V\u00e4s T\u00c5G", "V\u00e4stt\u00e5g")
         name = name.replace("Fär", "Färja")
 
         # Get destination ("Centralstationen")
@@ -253,6 +254,7 @@ class Viewport(tk.Tk):
                 name = name.replace("Bus", "Buss")
                 name = name.replace("Sp\u00e5", "Sp\u00e5rvagn")
                 name = name.replace("Reg T\u00c5G", "T\u00e5g")
+                name = name.replace("V\u00e4s T\u00c5G", "V\u00e4stt\u00e5g")
                 name = name.replace("Fär", "Färja")
 
                 # Create the label and add it to a list
